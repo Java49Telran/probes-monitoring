@@ -22,8 +22,7 @@ import telran.probes.repo.ProbeDataRepo;
 class AvgPopulatorTest {
 	private static final long SENSOR_ID = 123;
 	private static final float VALUE = 100;
-	@MockBean
-	MongoTransactionManager transactionManager;
+	
 	@Autowired
 	InputDestination producer;
 	static final ProbeData probeData = new ProbeData(SENSOR_ID, VALUE, 
