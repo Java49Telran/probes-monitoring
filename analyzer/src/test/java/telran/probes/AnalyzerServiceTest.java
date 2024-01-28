@@ -59,10 +59,8 @@ InputDestination producer;
 	@Test
 	@Order(1)
 	void normalFlowWithNoMapData() {
-		ResponseEntity<SensorRange> responseEntity =
-				new ResponseEntity<SensorRange>(SENSOR_RANGE, HttpStatus.OK);
-		when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(),
-				any(Class.class))).thenReturn(responseEntity);
+		
+		mockRemoteServiceRequest(SENSOR_RANGE, HttpStatus.OK, SENSOR_ID);
 		SensorRange actual = providerService.getSensorRange(SENSOR_ID);
 		assertEquals(SENSOR_RANGE, actual);
 		
@@ -112,7 +110,7 @@ InputDestination producer;
 				new ResponseEntity<SensorRange>(SENSOR_RANGE, HttpStatus.OK);
 		when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(),
 				any(Class.class))).thenReturn(responseEntity);
-		mockRemoteServideRequest(SENSOR_RANGE, HttpStatus.OK, SENSOR_ID_UNAVAILABLE);
+		mockRemoteServiceRequest(SENSOR_RANGE, HttpStatus.OK, SENSOR_ID_UNAVAILABLE);
 		actual = providerService.getSensorRange(SENSOR_ID_UNAVAILABLE);
 		assertEquals(SENSOR_RANGE, actual);
 	}
@@ -121,7 +119,7 @@ InputDestination producer;
 	void sensorInMapUpdated() {
 		//test case: In the case a sensor existing in the map has been updated 
 		//there must be remote service call with following updating map
-		mockRemoteServideRequest(SENSOR_RANGE_UPDATED, HttpStatus.OK, SENSOR_ID);
+		mockRemoteServiceRequest(SENSOR_RANGE_UPDATED, HttpStatus.OK, SENSOR_ID);
 		producer.send(new GenericMessage<String>(String.format("%s%s%d",
 				rangeUpdateToken, delimiter, SENSOR_ID)), consumerBindingName);
 		SensorRange actual = providerService.getSensorRange(SENSOR_ID);
@@ -147,7 +145,7 @@ InputDestination producer;
 				"email", delimiter, SENSOR_ID)), consumerBindingName);
 		
 	}
-	private void mockRemoteServideRequest(SensorRange sensorRange, HttpStatus status, 
+	private void mockRemoteServiceRequest(SensorRange sensorRange, HttpStatus status, 
 			long sensorId) {
 		ResponseEntity<SensorRange> responseEntity =
 				new ResponseEntity<SensorRange>(sensorRange, status);
