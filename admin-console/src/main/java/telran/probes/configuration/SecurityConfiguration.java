@@ -26,6 +26,7 @@ SecurityFilterChain configure(HttpSecurity http) throws Exception {
 	http.csrf(custom -> custom.disable());
 	http.authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
 	http.httpBasic(Customizer.withDefaults());
+	http.sessionManagement(custom -> custom.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 	return http.build();
 }
 
