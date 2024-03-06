@@ -61,6 +61,9 @@ InputDestination producer;
 	@MockBean
 	SensorRangeProviderService providerService;
 	boolean flSnsSending;
+	String arn;
+	String message;
+	String subject;
 	@Test
 	void noDeviationTest() {
 		when(providerService.getSensorRange(SENSOR_ID))
@@ -87,20 +90,21 @@ InputDestination producer;
 
 			@Override
 			public PublishResult answer(InvocationOnMock invocation) throws Throwable {
-				String arn = invocation.getArgument(0);
-				String message = invocation.getArgument(1);
-				String subject = invocation.getArgument(2);
-				assertEquals(awsTopic, arn);
-				assertTrue(message.contains("" + SENSOR_ID));
-				assertTrue(message.contains("" + VALUE));
-				assertTrue(message.contains("" + (VALUE - MIN_VALUE_DEVIATION)));
-				assertTrue(subject.contains("" + SENSOR_ID));
+				arn = invocation.getArgument(0);
+				 message = invocation.getArgument(1);
+				 subject = invocation.getArgument(2);
+				
 				flSnsSending=true;
 				return new PublishResult();
 			}
 		});
 		producer.send(new GenericMessage<ProbeData>(probeData), bindingNameConsumer);
 		assertTrue(flSnsSending);
+		assertEquals(awsTopic, arn);
+		assertTrue(message.contains("" + SENSOR_ID));
+		assertTrue(message.contains("" + VALUE));
+		assertTrue(message.contains("" + (VALUE - MIN_VALUE_DEVIATION)));
+		assertTrue(subject.contains("" + SENSOR_ID));
 		
 		
 		
